@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Backpage</title>
+    </head>
+    <body>
+    {% for post in posts %}
+        <div >
+            <span><i>{{ post.author.name }}</i></span>
+            <br/>
+            <span>{{ post.create_date }}</span>
+            <br/>
+            <span>{{ post.text }}</span>
+        </div>
+    {% endfor %}
+    </body>
+</html>

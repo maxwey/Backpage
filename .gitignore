@@ -3,3 +3,9 @@
 
 # Ignore virtual env files
 venv/
+
+# Ignore sqlite db binary
+**/db.sqlite3
+
+# Ignore "compiled" python binaries
+*.pyc
