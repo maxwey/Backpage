@@ -1,18 +1,78 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>Backpage</title>
-    </head>
-    <body>
-    {% for post in posts %}
-        <div >
-            <span><i>{{ post.author.name }}</i></span>
-            <br/>
-            <span>{{ post.create_date }}</span>
-            <br/>
-            <span>{{ post.text }}</span>
+{% extends "base.html" %}
+
+
+{% block head %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'feed/feed.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+{% for post, comments in posts %}
+<div class="feed-post">
+    <!-- Post's user information -->
+    <div class="feed-post-userbadge">
+        {% load static %}
+        <img class="feed-post-userbadge-portrait" src="{% static 'img/default_user_profile.png' %}">
+
+        <div>
+            <div class="feed-post-userbadge-username">
+                {{ post.author.name }}
+            </div>
+            <div class="feed-post-userbadge-date">
+                {{ post.create_date }}
+            </div>
         </div>
-    {% endfor %}
-    </body>
-</html>
+    </div>
+
+    <!-- Post content -->
+    <div class="feed-post-content">
+        {{ post.text }}
+    </div>
+
+    <!-- Post interaction controls -->
+    <div class="feed-post-interaction-controls">
+        <button class="feed-post-interaction-button feed-post-interaction-button-like">
+            <span class="button-label">Like</span>
+        </button>
+        <button class="feed-post-interaction-button feed-post-interaction-button-comment">
+            <span class="button-label">Comment</span>
+        </button>
+        <button class="feed-post-interaction-button feed-post-interaction-button-share">
+            <span class="button-label">Share</span>
+        </button>
+    </div>
+
+    <div class="feed-post-interaction-separator"></div>
+    <!-- Comment Section -->
+    <div class="feed-post-comments">
+        {% for comment in comments %}
+        <div class="feed-post-comment">
+            <div class="feed-post-comment-userbadge">
+                {% load static %}
+                <img class="feed-post-comment-userbadge-portrait" src="{% static 'img/default_user_profile.png' %}">
+
+                <div class="feed-post-comment-userbadge-username">
+                    {{ comment.author.name }}
+                </div>
+                <div class="feed-post-comment-userbadge-date">
+                    {{ comment.create_date }}
+                </div>
+            </div>
+            <div class="feed-post-comment-content">
+                {{ comment.text }}
+            </div>
+            <div class="feed-post-comment-separator"></div>
+        </div>
+        {% endfor %}
+        <!-- Comment writing section -->
+        <div class="feed-post-comment-writing">
+            <input class="feed-post-comment-text-box" type="text" placeholder="Say something!">
+            <img class="feed-post-comment-text-box-button" src="{% static 'feed/arrow.png' %}">
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

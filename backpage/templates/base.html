@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% load static %}
+
+        <meta charset="utf-8">
+        <title>Backpage</title>
+
+        <!-- Fonts -->
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+
+        <!-- Stylesheets -->
+        <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}">
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        <div class="header">
+            {% block header %}{% endblock %}
+            {% include "header.html" %}
+        </div>
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+    </body>
+</html>

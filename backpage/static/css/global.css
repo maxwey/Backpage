@@ -1,0 +1,51 @@
+
+:root {
+    --theme-color: #629FB0;
+    --theme-color-border: #E7EDEE;
+    --theme-font: 'Roboto';
+    --font-size-default: 14px;
+    --font-size-big: 17px;
+    --font-size-smaller: 12px;
+    --font-size-small: 10px;
+
+    --default-padding: 10px;
+    --header-height: 50px;
+    --border-radius: 5px;
+
+}
+
+
+body {
+    margin: 0px;
+    background-color: whitesmoke;
+    font-family: var(--theme-font);
+    font-size: var(--font-size-default);
+}
+
+.header {
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    background-color: var(--theme-color);
+    height: var(--header-height);
+    width: 100%;
+    padding: var(--default-padding);
+    box-sizing: border-box;
+    z-index: 50;
+}
+
+.content {
+    margin: auto;
+    margin-top: var(--header-height); /* Offset from the header */
+
+    box-sizing: border-box;
+    padding: var(--default-padding);
+
+    width: 75%;
+    min-width: 600px;
+}
+
+
+.footer {
+}
