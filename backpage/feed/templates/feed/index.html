@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 
+{% csrf_token %}
 
 {% block head %}
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'feed/feed.css' %}">
+    <script src="{% static 'feed/async.js' %}"></script>
+    <script src="{% static 'feed/interactionControls.js' %}"></script>
 {% endblock %}
 
 
@@ -33,13 +36,13 @@
 
     <!-- Post interaction controls -->
     <div class="feed-post-interaction-controls">
-        <button class="feed-post-interaction-button feed-post-interaction-button-like">
+        <button class="feed-post-interaction-button feed-post-interaction-button-like" onclick="like('{{ post.id }}')">
             <span class="button-label">Like</span>
         </button>
-        <button class="feed-post-interaction-button feed-post-interaction-button-comment">
+        <button class="feed-post-interaction-button feed-post-interaction-button-comment" onclick="document.getElementById('comment-input-{{ post.id }}').focus()">
             <span class="button-label">Comment</span>
         </button>
-        <button class="feed-post-interaction-button feed-post-interaction-button-share">
+        <button class="feed-post-interaction-button feed-post-interaction-button-share" onclick="share('{{ post.id }}')">
             <span class="button-label">Share</span>
         </button>
     </div>
@@ -68,8 +71,8 @@
         {% endfor %}
         <!-- Comment writing section -->
         <div class="feed-post-comment-writing">
-            <input class="feed-post-comment-text-box" type="text" placeholder="Say something!">
-            <img class="feed-post-comment-text-box-button" src="{% static 'feed/arrow.png' %}">
+            <input class="feed-post-comment-text-box" id="comment-input-{{ post.id }}" type="text" placeholder="Say something!">
+            <img class="feed-post-comment-text-box-button" src="{% static 'feed/arrow.png' %}" onclick="comment('{{ post.id }}', document.getElementById('comment-input-{{ post.id}}').value)">
         </div>
     </div>
 </div>

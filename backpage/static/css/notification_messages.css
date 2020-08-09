@@ -1,0 +1,39 @@
+.notification-messages {
+    position: fixed;
+    top: 75px;
+    right: 25px;
+    width: 300px;
+    z-index: 100;
+}
+
+.notification-message-template {
+    display: none;
+}
+
+.notification-message {
+    padding: 12px;
+    border-radius: 7px;
+
+    background-color: #91bbd0c0;
+    margin-bottom: 10px;
+}
+
+.notification-message-header {
+    font-weight: bold;
+}
+
+.notification-message-content {
+    font-size: var(--default-font-size);
+}
+
+.notification-message-info {
+    background-color: #91bbd0c0;
+}
+
+.notification-message-failure {
+    background-color: #d09191c0;
+}
+
+.notification-message-success {
+    background-color: #abd091c0;
+}

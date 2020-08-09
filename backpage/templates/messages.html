@@ -1,0 +1,19 @@
+{% block head %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/notification_messages.css' %}">
+    <script src="{% static 'js/messages.js' %}"></script>
+{% endblock %}
+
+
+{% block messages %}
+<div class="notification-messages" id="notification-messages">
+    <div class="notification-message notification-message-template" id="notification-message-template">
+        <div class="notification-message-header">
+            Failed
+        </div>
+        <div class="notification-message-content">
+            This is the error text!
+        </div>
+    </div>
+</div>
+{% endblock %}
