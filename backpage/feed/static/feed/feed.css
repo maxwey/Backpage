@@ -4,10 +4,7 @@
     padding: var(--default-padding);
     box-sizing: border-box;
     /* define the border around each post block */
-    border-style: solid;
-    border-width: 0px;
     border-radius: var(--border-radius);
-
 }
 
 /* The css that controls the appearance of the user name/picture */
@@ -18,8 +15,12 @@
 .feed-post-userbadge-portrait {
     width: 50px;
     height: 50px;
-    border-radius: 50%;
     margin: 5px;
+    border-radius: 50%;
+    border-width: 1px;
+    border-style: solid;
+    border-color: lightgray;
+    object-fit: cover;
 }
 
 /* The css that controls the display of the user name/text */
@@ -29,6 +30,11 @@
     color: var(--theme-color);
     margin: 5px;
     margin-top: 10px;
+}
+
+.feed-post-userbadge-verified {
+    width: 15px;
+    height: 15px;
 }
 
 /* The css that controls the display of the post date */
@@ -114,8 +120,12 @@
 .feed-post-comment-userbadge-portrait {
     width: 25px;
     height: 25px;
-    border-radius: 50%;
     margin-right: 5px;
+    border-radius: 50%;
+    border-width: 1px;
+    border-style: solid;
+    border-color: lightgray;
+    object-fit: cover;
 }
 
 /* The css that controls the display of the comment user name/text */
@@ -124,6 +134,11 @@
     font-size: var(--default-font-size);
     color: var(--theme-color);
     margin: 4px;
+}
+
+.feed-post-comment-userbadge-verified {
+    width: 12px;
+    height: 12px;
 }
 
 /* The css that controls the display of the comment date */

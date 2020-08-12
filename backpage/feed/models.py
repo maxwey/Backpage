@@ -1,4 +1,5 @@
 from django.db import models
+from django.templatetags.static import static
 
 # Create your models here.
 
@@ -12,6 +13,17 @@ class User(models.Model):
     name = models.CharField(max_length=128)
     # Introduction text about user
     intro_text = models.TextField()
+    # Portrait picture
+    portrait = models.ImageField(blank=True, null=True, upload_to='portraits')
+    # TODO: Is a verified user (gets a special badge)
+    is_verified = models.BooleanField(default=False)
+    # TODO: Friends/Connections. Need some many-to-many relationship
+
+    def get_portrait_url(self):
+        try:
+            return self.portrait.url
+        except:
+            return static('img/default_user_profile.png')
 
     def __str__(self):
         return "User{%d, %s}" % (self.id, self.name)

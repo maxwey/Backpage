@@ -1,8 +1,12 @@
+
+
 .notification-messages {
+    --message-width: 350px;
+
     position: fixed;
     top: 75px;
     right: 25px;
-    width: 300px;
+    width: var(--message-width);
     z-index: 100;
 }
 
@@ -36,4 +40,17 @@
 
 .notification-message-success {
     background-color: #abd091c0;
+}
+
+/* Animation for the removal of the messages */
+@keyframes expiring-message-animation {
+    from { transform: translate(0px, 0px); opacity: 1; }
+    to   { transform: translate(calc(var(--message-width) + 100px), 0px); opacity: 0; }
+}
+
+.expiring-message {
+    transform: translate(0px, 0px);
+    animation-name: expiring-message-animation;
+    animation-duration: 1s; /* This should match with the delay used to delete item  */
+    animation-fill-mode: forwards;
 }

@@ -9,3 +9,6 @@ venv/
 
 # Ignore "compiled" python binaries
 *.pyc
+
+# Ignore the uploaded data files
+backpage/data/**

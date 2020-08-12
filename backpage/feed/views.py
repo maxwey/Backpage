@@ -1,5 +1,5 @@
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.template import loader
 from .models import Post, CommentPost, ParentPost, User
 from .SafeError import InputError
@@ -10,8 +10,7 @@ import json
 logger = logging.getLogger(__name__)
 
 
-# Create your views here.
-def index(request):
+def feed(request):
     # load the data from the db
     recents_posts = ParentPost.objects.order_by('-create_date')
 
@@ -28,7 +27,7 @@ def index(request):
             data.append((recent_post, ()))
 
     # load the html template used for the feed page
-    template = loader.get_template('feed/index.html')
+    template = loader.get_template('feed/feed.html')
 
     # set the context for the template (define the variables used in the template)
     context = {
@@ -39,10 +38,23 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
+def user_profile(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+
+    # load the user profile template
+    template = loader.get_template('feed/userprofile.html')
+
+    # set the context for the template (define the variables that can be used in the template)
+    context = {
+        'user': user
+    }
+
+    return HttpResponse(template.render(context, request))
+
+
 # Process the API request and return a JSON object with the result from the API request
 def post_api(request, post_id):
     MAXIMUM_API_PAYLOAD_LENGTH = 1500
-
 
     try:
         # check the payload type is expected
@@ -61,7 +73,7 @@ def post_api(request, post_id):
 
         data = {
             'success': True,
-            'post': post_id
+            'post_id': post_id
         }
 
         # check that the required keys are provided as part of the payload

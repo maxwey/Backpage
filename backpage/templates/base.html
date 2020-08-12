@@ -12,15 +12,11 @@
         <!-- Stylesheets -->
         <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}">
         {% block head %}{% endblock %}
-        {% include "messages.html" %}
     </head>
     <body>
         <!-- A location for which message can be shown to the user to indicate status -->
-        {% block messages %}{% endblock %}
         {% include "messages.html" %}
-
         <div class="header">
-            {% block header %}{% endblock %}
             {% include "header.html" %}
         </div>
         <div class="content">

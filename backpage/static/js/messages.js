@@ -27,9 +27,14 @@ function addMessage(title, message, type='INFO') {
 
     cloned_message.classList.remove('notification-message-template');
 
-    // Set the timeout for the message to expire after 15 sec
+    // Set the timeout for the message to expire after 10 sec
     setTimeout(() => {
-        cloned_message.remove();
+        // Set the animation to hide the message in a nice looking way
+        cloned_message.classList.add('expiring-message');
+        setTimeout(() => {
+            // Actually deletes the message from the message list
+            cloned_message.remove();
+        }, 1050 /* 1.05 seconds; slightly longer than animation (1 second) */);
     }, 10000);
 
     messages_container.appendChild(cloned_message);

@@ -30,7 +30,6 @@ body {
     background-color: var(--theme-color);
     height: var(--header-height);
     width: 100%;
-    padding: var(--default-padding);
     box-sizing: border-box;
     z-index: 50;
 }
@@ -46,6 +45,14 @@ body {
     min-width: 600px;
 }
 
+a, a:visited {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
 
 .footer {
 }

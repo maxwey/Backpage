@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'feed/user.css' %}">
+    <script src="{% static 'feed/async.js' %}"></script>
+    <script src="{% static 'feed/interactionControls.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="user-content">
+    <div class="user-content-title">
+        {% load static %}
+        <img class="user-content-portrait" src="{{ user.get_portrait_url }}">
+        <div class="user-content-name">
+            {{ user.name }}
+            {% if user.is_verified %}
+            <img class="user-content-verified" src="{% static 'feed/verified.png' %}" title="This user has a verified profile">
+            {% endif %}
+        </div>
+    </div>
+    <div class="user-content-bio">
+        {{ user.intro_text }}
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,24 @@
+.header-content {
+    display:flex;
+}
+
+.header-logo {
+    position: relative;
+    font-family: 'Permanent Marker', cursive;
+    font-size: 40px;
+    transform: rotate(-5deg);
+
+    top: -6px;
+    margin-left: 10px;
+    margin-right: 20px;
+    color: #022631;
+}
+
+a#header-logo-link {
+    text-decoration: none !important;
+    color: inherit;
+}
+
+.header-current-user {
+
+}

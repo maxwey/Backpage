@@ -1,0 +1,44 @@
+/* The div containing the main user content */
+.user-content {
+    background-color: #FFFFFF;
+    margin: 15px;
+    padding: var(--default-padding);
+    box-sizing: border-box;
+    /* define the border around each post block */
+    border-radius: var(--border-radius);
+}
+
+.user-content-title {
+    display: flex;
+    border-bottom: 1px solid var(--theme-color-border);
+    padding: 15px;
+}
+
+.user-content-portrait {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border-width: 1px;
+    border-style: solid;
+    border-color: lightgray;
+    object-fit: cover;
+}
+
+.user-content-name {
+    align-self: center;
+
+    font-weight: bold;
+    font-size: 25px;
+    color: var(--theme-color);
+    margin-left: 30px;
+}
+
+.user-content-verified {
+    width: 20px;
+    height: 20px;
+}
+
+.user-content-bio {
+    margin-top: 10px;
+    padding: var(--default-padding);
+}

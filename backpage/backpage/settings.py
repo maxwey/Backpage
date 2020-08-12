@@ -63,8 +63,9 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                #'django.template.context_processors.media',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+                'django.contrib.messages.context_processors.messages'
             ],
         },
     },
@@ -124,3 +125,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+
+
+# Media files (User images, file uploads)
+# https://docs.djangoproject.com/en/3.0/topics/files/
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'data')
+MEDIA_URL = '/data/'
