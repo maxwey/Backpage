@@ -1,8 +1,11 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, QueryDict
 from django.shortcuts import render, get_object_or_404
 from django.template import loader
-from .models import Post, CommentPost, ParentPost, User
+from django.core.exceptions import ObjectDoesNotExist
+
+from .models import Post, CommentPost, ParentPost, User, RealUser
 from .SafeError import InputError
+from . import utils
 import logging
 import json
 
@@ -10,7 +13,60 @@ import json
 logger = logging.getLogger(__name__)
 
 
+# Helper function for the views to help with
+def check_if_login_required(request):
+    if 'session_id' not in request.COOKIES:
+        return True
+
+    session_id_raw = request.COOKIES.get('session_id').split('|')
+    user_id = int(session_id_raw[0])
+    session_id = session_id_raw[1]
+
+    # Get the user from the database and check the session id
+    try:
+        user = RealUser.objects.get(pk=user_id)
+        return user.attempt_authentication(session_id)
+    except ObjectDoesNotExist as e:
+        # The session ID does not match with any existing user, have user re-authenticate
+        return True
+    except Exception as e:
+        logger.error(e)
+        return True
+
+
+def login(request):
+    # Check if login is unnecessary and redirect to another page
+    if not check_if_login_required(request):
+        if 'next' in request.GET:
+            qs = request.GET.copy()
+            next_page = qs.pop('next')[0]
+            if len(qs) > 0:
+                return HttpResponseRedirect((next_page + '?%s') % qs.urlencode())
+            else:
+                return HttpResponseRedirect(next_page)
+        else:
+            return HttpResponseRedirect('/')
+
+    # Login is required, prepare login page
+    # load the html template used for the feed page
+    template = loader.get_template('feed/login.html')
+
+    # set the context for the template (define the variables used in the template)
+    context = {}
+
+    # Return the HttpResponse to the user with the rendered template
+    return HttpResponse(template.render(context, request))
+
+
 def feed(request):
+    # Check if logged in, else redirect to login page
+    if check_if_login_required(request):
+        qd = QueryDict(query_string=request.GET.urlencode(), mutable=True)
+        qd['next'] = request.path
+        response = HttpResponseRedirect('/login?%s' % qd.urlencode())
+        response.delete_cookie('session_id')
+        return response
+
     # load the data from the db
     recents_posts = ParentPost.objects.order_by('-create_date')
 
@@ -39,6 +95,14 @@ def feed(request):
 
 
 def user_profile(request, user_id):
+    # Check if logged in, else redirect to login page
+    if check_if_login_required(request):
+        qd = QueryDict(query_string=request.GET.urlencode(),mutable=True)
+        qd['next'] = request.path
+        response = HttpResponseRedirect('/login?%s' % qd.urlencode())
+        response.delete_cookie('session_id')
+        return response
+
     user = get_object_or_404(User, pk=user_id)
 
     # load the user profile template
@@ -52,48 +116,79 @@ def user_profile(request, user_id):
     return HttpResponse(template.render(context, request))
 
 
+#######################################
+#    API Endpoints
+#######################################
+
+
+def auth(request):
+    try:
+        request_payload = utils.verify_json_request(request, {
+            'display_name': '[\w\d ]{3,126}',
+            'user_name': '[\w\d][\w\d_]{3,126}[\w\d]'
+        })
+
+        try:
+            # user_name is unique, only 1 or none
+            user = RealUser.objects.get(user_name=request_payload['user_name'])
+            if user is not None:
+                new_session_id,session_expiration = user.authenticate()
+        except ObjectDoesNotExist as e:
+            user = RealUser()
+            user.name = request_payload['display_name']
+            user.user_name = request_payload['user_name']
+            user.save()
+            new_session_id, session_expiration = user.authenticate()
+        except Exception as e:
+            logger.error(e)
+            raise InputError('Could not get user information.', is_message_safe=True)
+
+        data = {
+            'success': True
+        }
+
+        response = JsonResponse(data)
+        response.set_cookie('session_id', new_session_id, expires=session_expiration)
+        return response
+
+    except InputError as e:
+        return JsonResponse({'success': False, 'error': e.__str__()}, status=500)
+    except Exception as e:
+        logger.error('An unexpected error happened when processing an API call', exc_info=e)
+        return JsonResponse({'success': False}, status=500)
+
+
+
 # Process the API request and return a JSON object with the result from the API request
 def post_api(request, post_id):
-    MAXIMUM_API_PAYLOAD_LENGTH = 1500
+
+    # Check if logged in, else fail
+    if check_if_login_required(request):
+        response = HttpResponse('Unauthorized', status=401)
+        response.delete_cookie('session_id')
+        return response
 
     try:
-        # check the payload type is expected
-        if request.content_type != 'application/JSON':
-            raise InputError('An invalid request payload type was provided', is_message_safe=True)
-        # check the payload size is below limit (prevent abuse by sending overly large payload)
-        if len(request.body) > MAXIMUM_API_PAYLOAD_LENGTH:
-            raise InputError('Payload size exceeded maximum', is_message_safe=True)
-
-        # get payload and ensure that it is correctly formatted as JSON object
-        request_payload = ''
-        try:
-            request_payload = json.loads(request.body)
-        except json.JSONDecodeError:
-            raise InputError('Payload was not formatted correctly, and could not be parsed', is_message_safe=True)
+        request_payload = utils.verify_json_request(request, {'action': 'like|comment|share'})
 
         data = {
             'success': True,
-            'post_id': post_id
+            'post_id': post_id,
+            'action': request_payload['action']
         }
 
-        # check that the required keys are provided as part of the payload
-        try:
-            if request_payload['action'].upper() == 'LIKE':
-                data['action'] = 'LIKE'
-            elif request_payload['action'].upper() == 'COMMENT':
-                data['action'] = 'COMMENT'
-                if 'content' not in request_payload:
-                    raise InputError('Comment must include content', is_message_safe=True)
-                content_text = request_payload['content'].strip()
-                if len(content_text) == 0:
-                    raise InputError('Comment text cannot be empty', is_message_safe=True)
-                data['content'] = content_text
-            elif request_payload['action'].upper() == 'SHARE':
-                data['action'] = 'SHARE'
-            else:
-                raise InputError('API action provided was not recognized', is_message_safe=True)
-        except KeyError:
-            raise InputError('Payload did not contain the required keys', is_message_safe=True)
+        # additional payload content checks
+        if request_payload['action'] == 'like':
+            pass
+        elif request_payload['action'] == 'COMMENT':
+            if 'content' not in request_payload:
+                raise InputError('Comment must include content', is_message_safe=True)
+            content_text = request_payload['content'].strip()
+            if len(content_text) == 0:
+                raise InputError('Comment text cannot be empty', is_message_safe=True)
+            data['content'] = content_text
+        elif request_payload['action'] == 'SHARE':
+            pass
 
         # Returns the a response JSON
         return JsonResponse(data)

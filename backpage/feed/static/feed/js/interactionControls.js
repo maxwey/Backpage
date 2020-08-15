@@ -5,9 +5,8 @@
 
 function like(postId) {
     const data = {
-        'action': 'LIKE',
-        'user_id': '000',
-        'sec_token': '000'
+        'action': 'like',
+        'user_id': '000'
     };
     const endpoint = `post/${postId}/a`;
 
@@ -28,10 +27,9 @@ function comment(postId, comment) {
     }
 
     const data = {
-        'action': 'COMMENT',
+        'action': 'comment',
         'content': trimmed_text,
-        'user_id': '000',
-        'sec_token': '000'
+        'user_id': '000'
     };
     const endpoint = `post/${postId}/a`;
 
@@ -47,9 +45,8 @@ function comment(postId, comment) {
 
 function share(postId) {
     const data = {
-        'action': 'SHARE',
-        'user_id': '000',
-        'sec_token': '000'
+        'action': 'share',
+        'user_id': '000'
     };
     const endpoint = `post/${postId}/a`;
 

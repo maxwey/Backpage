@@ -56,3 +56,15 @@ a:hover {
 
 .footer {
 }
+
+.spinner {
+    animation-name: spinner-animation;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+@keyframes spinner-animation {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
