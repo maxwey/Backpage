@@ -7,6 +7,7 @@ urlpatterns = [
     # HTML visible pages
     path('', views.feed, name='feed'),  # main view (feed)
     path('login', views.login, name='login'),  # the login page
+    path('logout', views.logout, name='logout'),  # the logout page
     path('user/<int:user_id>/', views.user_profile, name='user_profile'),  # the user profile page
 
     # APIs endpoints

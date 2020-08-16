@@ -3,11 +3,8 @@
 {% block head %}
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'feed/css/login.css' %}">
-    <script src="{% static 'feed/js/async.js' %}"></script>
     <script src="{% static 'feed/js/login.js' %}"></script>
 {% endblock %}
-
-
 
 
 {% block content %}
@@ -34,7 +31,6 @@
             consult with the research lead. Thanks for participating!
         </div>
     </div>
-
 
     {% csrf_token %}
 </div>

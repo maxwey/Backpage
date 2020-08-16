@@ -1,7 +1,13 @@
+from django.http import HttpResponseRedirect, QueryDict
+from django.core.exceptions import ObjectDoesNotExist
+from .models import RealUser
 from .SafeError import InputError
+import logging
 import json
 import re
 
+# Get the logger for this class
+logger = logging.getLogger(__name__)
 MAXIMUM_API_PAYLOAD_LENGTH = 1500
 
 
@@ -35,3 +41,37 @@ def verify_json_request(request, key_val):
             raise InputError('Value provided was not an allowed value', is_message_safe=True)
 
     return request_payload
+
+
+# Helper function that checks whether the user needs to log in
+# returns None if login is required, or User object of logged in user if not
+def get_logged_in_user(request):
+    if 'session_id' not in request.COOKIES:
+        return None
+
+    session_id_raw = request.COOKIES.get('session_id')
+    user_id = int(session_id_raw.split('|')[0])
+
+    # Get the user from the database and check the session id
+    try:
+        user = RealUser.objects.get(pk=user_id)
+        if user.attempt_authentication(session_id_raw):
+            return user
+        else:
+            return None
+    except ObjectDoesNotExist as e:
+        # The session ID does not match with any existing user, have user re-authenticate
+        return None
+    except Exception as e:
+        logger.error(e)
+        return None
+
+
+# Helper function that redirects to the login page while keeping the necessary
+# query string parameters and appending the next page to load in the query string
+def redirect_to_login(request):
+    qd = QueryDict(query_string=request.GET.urlencode(), mutable=True)
+    qd['next'] = request.path
+    response = HttpResponseRedirect('/login?%s' % qd.urlencode())
+    response.delete_cookie('session_id')
+    return response

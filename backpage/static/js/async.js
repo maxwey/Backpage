@@ -59,8 +59,11 @@ function handleReadyStateChange(request, resolve, reject) {
  * This function parses the cookies into a Key/Value dictionary
  */
 function getCookie(cookieName) {
-    return document.cookie
-        .split('; ')
-        .find(row => row.startsWith(cookieName))
-        .split('=')[1];
+    const entries = document.cookie.split('; ');
+    for (entry of entries) {
+        if (entry.startsWith(cookieName)) {
+            return entry.split('=')[1];
+        }
+    }
+    return null;
 }

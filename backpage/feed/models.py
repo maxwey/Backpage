@@ -2,6 +2,8 @@ from django.db import models
 from django.templatetags.static import static
 from django.utils import timezone
 from datetime import datetime, timedelta
+import secrets
+import string
 
 # Create your models here.
 
@@ -45,23 +47,29 @@ class RealUser(User):
     # The user name
     user_name = models.CharField(max_length=128, unique=True)
     # The session ID for this user
-    session_id = models.CharField(max_length=256)
+    session_id = models.CharField(max_length=128, null=True)
     # session id expiration (default is epoch time)
-    expiration_time = models.DateTimeField(default=datetime.utcfromtimestamp(0))
+    expiration_time = models.DateTimeField(default=datetime.utcfromtimestamp(0), null=True)
 
     # Attempt to authenticate, checking that session id has not expired, and
     # sessionIds match.
     def attempt_authentication(self, provided_session_id):
         if self.expiration_time is not None and timezone.now() >= self.expiration_time:
             return False
-        return self.session_id == provided_session_id
+        return self.session_id is not None and self.session_id == provided_session_id
 
     def authenticate(self):
         # encrypt id with server-known Secret Key
-        self.session_id = str(self.id) + "|test123456-DONOTUSE"
+        # session id must be <= 128 characters
+        self.session_id = str(self.id) + "|" + ''.join(secrets.choice(string.ascii_letters) for _ in range(100))
         self.expiration_time = timezone.now() + timedelta(hours=6)
         self.save()
         return self.session_id, self.expiration_time
+
+    def deauthenticate(self):
+        self.expiration_time = None
+        self.session_id = None
+        self.save()
 
 
 class Post(models.Model):

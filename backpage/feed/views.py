@@ -13,30 +13,11 @@ import json
 logger = logging.getLogger(__name__)
 
 
-# Helper function for the views to help with
-def check_if_login_required(request):
-    if 'session_id' not in request.COOKIES:
-        return True
-
-    session_id_raw = request.COOKIES.get('session_id').split('|')
-    user_id = int(session_id_raw[0])
-    session_id = session_id_raw[1]
-
-    # Get the user from the database and check the session id
-    try:
-        user = RealUser.objects.get(pk=user_id)
-        return user.attempt_authentication(session_id)
-    except ObjectDoesNotExist as e:
-        # The session ID does not match with any existing user, have user re-authenticate
-        return True
-    except Exception as e:
-        logger.error(e)
-        return True
-
-
 def login(request):
     # Check if login is unnecessary and redirect to another page
-    if not check_if_login_required(request):
+    # (don't show login page to logged-in users)
+    logged_in_user = utils.get_logged_in_user(request)
+    if logged_in_user is not None:
         if 'next' in request.GET:
             qs = request.GET.copy()
             next_page = qs.pop('next')[0]
@@ -58,14 +39,22 @@ def login(request):
     return HttpResponse(template.render(context, request))
 
 
+def logout(request):
+    logged_in_user = utils.get_logged_in_user(request)
+    if logged_in_user is not None:
+        logged_in_user.deauthenticate()
+
+    # Redirect to login and clear cookies
+    response = HttpResponseRedirect('/login')
+    response.delete_cookie('session_id')
+    return response
+
+
 def feed(request):
     # Check if logged in, else redirect to login page
-    if check_if_login_required(request):
-        qd = QueryDict(query_string=request.GET.urlencode(), mutable=True)
-        qd['next'] = request.path
-        response = HttpResponseRedirect('/login?%s' % qd.urlencode())
-        response.delete_cookie('session_id')
-        return response
+    logged_in_user = utils.get_logged_in_user(request)
+    if logged_in_user is None:
+        return utils.redirect_to_login(request)
 
     # load the data from the db
     recents_posts = ParentPost.objects.order_by('-create_date')
@@ -87,6 +76,7 @@ def feed(request):
 
     # set the context for the template (define the variables used in the template)
     context = {
+        'logged_in_user': logged_in_user,
         'posts': data
     }
 
@@ -96,12 +86,9 @@ def feed(request):
 
 def user_profile(request, user_id):
     # Check if logged in, else redirect to login page
-    if check_if_login_required(request):
-        qd = QueryDict(query_string=request.GET.urlencode(),mutable=True)
-        qd['next'] = request.path
-        response = HttpResponseRedirect('/login?%s' % qd.urlencode())
-        response.delete_cookie('session_id')
-        return response
+    logged_in_user = utils.get_logged_in_user(request)
+    if logged_in_user is None:
+        return utils.redirect_to_login(request)
 
     user = get_object_or_404(User, pk=user_id)
 
@@ -110,6 +97,7 @@ def user_profile(request, user_id):
 
     # set the context for the template (define the variables that can be used in the template)
     context = {
+        'logged_in_user': logged_in_user,
         'user': user
     }
 
@@ -158,13 +146,12 @@ def auth(request):
         return JsonResponse({'success': False}, status=500)
 
 
-
 # Process the API request and return a JSON object with the result from the API request
 def post_api(request, post_id):
 
-    # Check if logged in, else fail
-    if check_if_login_required(request):
-        response = HttpResponse('Unauthorized', status=401)
+    # Check if logged in, else fail (no redirect)
+    if utils.get_logged_in_user(request) is None:
+        response = JsonResponse({'success': False, 'error': 'Unauthorized'}, status=401)
         response.delete_cookie('session_id')
         return response
 
