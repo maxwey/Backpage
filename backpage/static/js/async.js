@@ -56,7 +56,8 @@ function handleReadyStateChange(request, resolve, reject) {
 
 
 /*
- * This function parses the cookies into a Key/Value dictionary
+ * This function returns the value for the given cookie name.
+ * If a cookie with the given name is not found, null is returned.
  */
 function getCookie(cookieName) {
     const entries = document.cookie.split('; ');

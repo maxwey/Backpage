@@ -8,10 +8,12 @@
     --font-size-smaller: 12px;
     --font-size-small: 10px;
 
-    --default-padding: 10px;
-    --header-height: 50px;
-    --border-radius: 5px;
+    --header-height: 60px;
+    --content-width-perc: 85%;
+    --content-width-min: 600px;
 
+    --default-padding: 10px;
+    --border-radius: 5px;
 }
 
 
@@ -41,8 +43,8 @@ body {
     box-sizing: border-box;
     padding: var(--default-padding);
 
-    width: 75%;
-    min-width: 600px;
+    width: var(--content-width-perc);
+    min-width: var(--content-width-min);
 }
 
 a, a:visited {

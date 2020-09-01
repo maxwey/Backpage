@@ -16,7 +16,7 @@ class User(models.Model):
     # Name of the user
     name = models.CharField(max_length=128)
     # Introduction text about user
-    intro_text = models.TextField()
+    intro_text = models.TextField(blank=True)
     # Portrait picture
     portrait = models.ImageField(blank=True, null=True, upload_to='portraits')
     # Is a verified user (gets a special badge)
@@ -47,9 +47,11 @@ class RealUser(User):
     # The user name
     user_name = models.CharField(max_length=128, unique=True)
     # The session ID for this user
-    session_id = models.CharField(max_length=128, null=True)
+    session_id = models.CharField(max_length=128, blank=True, null=True)
     # session id expiration (default is epoch time)
     expiration_time = models.DateTimeField(default=datetime.utcfromtimestamp(0), null=True)
+    # Whether this user's actions are being tracked
+    track_enabled = models.BooleanField(default=False)
 
     # Attempt to authenticate, checking that session id has not expired, and
     # sessionIds match.
@@ -109,3 +111,19 @@ class ParentPost(Post):
 
     def __str__(self):
         return "ParentPost{%d, %s, %s}" % (self.id, self.author, self.text[:20])
+
+
+class PostInteractionTracker(models.Model):
+    """
+    This class is for storing information about the user interactions
+    """
+    # the name of the action
+    action = models.CharField(max_length=32)
+    # the content of the action
+    content = models.TextField()
+    # the post interacting with
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    # the user
+    user = models.ForeignKey(RealUser, on_delete=models.CASCADE)
+    # create time
+    timestamp = models.DateTimeField(auto_now_add=True)

@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template import loader
 from django.core.exceptions import ObjectDoesNotExist
 
-from .models import Post, CommentPost, ParentPost, User, RealUser
+from .models import Post, CommentPost, ParentPost, User, RealUser, PostInteractionTracker
 from .SafeError import InputError
 from . import utils
 import logging
@@ -92,13 +92,25 @@ def user_profile(request, user_id):
 
     user = get_object_or_404(User, pk=user_id)
 
+    user_posts = ParentPost.objects.filter(author_id=user_id).order_by('-create_date')
+    data = []
+    for recent_post in user_posts:
+        comments_qs = CommentPost.objects.filter(parent_post_id=recent_post.id)
+        # result set was empty; skip over
+        if comments_qs:
+            comments = comments_qs.order_by('create_date')
+            data.append((recent_post, comments))
+        else:
+            data.append((recent_post, ()))
+
     # load the user profile template
     template = loader.get_template('feed/userprofile.html')
 
     # set the context for the template (define the variables that can be used in the template)
     context = {
         'logged_in_user': logged_in_user,
-        'user': user
+        'user': user,
+        'posts': data
     }
 
     return HttpResponse(template.render(context, request))
@@ -117,10 +129,9 @@ def auth(request):
         })
 
         try:
-            # user_name is unique, only 1 or none
+            # user_name is unique, only 1 or none (none causes Exception to be raised)
             user = RealUser.objects.get(user_name=request_payload['user_name'])
-            if user is not None:
-                new_session_id,session_expiration = user.authenticate()
+            new_session_id,session_expiration = user.authenticate()
         except ObjectDoesNotExist as e:
             user = RealUser()
             user.name = request_payload['display_name']
@@ -150,32 +161,48 @@ def auth(request):
 def post_api(request, post_id):
 
     # Check if logged in, else fail (no redirect)
-    if utils.get_logged_in_user(request) is None:
+    logged_in_user = utils.get_logged_in_user(request)
+    if logged_in_user is None:
         response = JsonResponse({'success': False, 'error': 'Unauthorized'}, status=401)
         response.delete_cookie('session_id')
         return response
 
     try:
         request_payload = utils.verify_json_request(request, {'action': 'like|comment|share'})
+        try:
+            post = Post.objects.get(id=post_id)
+        except ObjectDoesNotExist as e:
+            raise InputError('Post specified does not exist', is_message_safe=True)
 
         data = {
             'success': True,
             'post_id': post_id,
-            'action': request_payload['action']
+            'action': request_payload['action'],
+            'message': 'Success'
         }
 
         # additional payload content checks
         if request_payload['action'] == 'like':
-            pass
-        elif request_payload['action'] == 'COMMENT':
+            data['message'] = 'Post liked!'
+        elif request_payload['action'] == 'comment':
             if 'content' not in request_payload:
                 raise InputError('Comment must include content', is_message_safe=True)
             content_text = request_payload['content'].strip()
             if len(content_text) == 0:
                 raise InputError('Comment text cannot be empty', is_message_safe=True)
             data['content'] = content_text
-        elif request_payload['action'] == 'SHARE':
-            pass
+            data['message'] = 'Comment posted!'
+        elif request_payload['action'] == 'share':
+            data['message'] = 'Post shared!'
+
+        if logged_in_user.track_enabled:
+            entry = PostInteractionTracker()
+            entry.user = logged_in_user
+            entry.post = post
+            entry.action = data['action']
+            if 'content' in data:
+                entry.content = data['content']
+            entry.save()
 
         # Returns the a response JSON
         return JsonResponse(data)

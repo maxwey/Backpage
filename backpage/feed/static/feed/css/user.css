@@ -4,7 +4,7 @@
     margin: 15px;
     padding: var(--default-padding);
     box-sizing: border-box;
-    /* define the border around each post block */
+    /* define the border around the block */
     border-radius: var(--border-radius);
 }
 
@@ -41,4 +41,26 @@
 .user-content-bio {
     margin-top: 10px;
     padding: var(--default-padding);
+}
+
+.user-content-feed-title {
+    background-color: #FFFFFF;
+
+    padding-left: var(--default-padding);
+    padding-right: var(--default-padding);
+    box-sizing: border-box;
+    /* define the border the block */
+    border-radius: var(--border-radius);
+
+    font-size: 14px;
+}
+
+.user-content-feed-title-separator {
+    border-top-style: solid;
+    border-width: 1px;
+    border-color: var(--theme-color-border);
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: calc(var(--default-padding) * -1);
+    margin-right: calc(var(--default-padding) * -1);
 }

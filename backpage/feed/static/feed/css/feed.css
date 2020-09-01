@@ -187,3 +187,7 @@
     margin-left: 10px;
     color: var(--theme-color);
 }
+
+.feed-post-comment-placeholder {
+    display: none;
+}
