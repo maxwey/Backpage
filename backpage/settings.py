@@ -28,8 +28,9 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '9asdf9023jQp.a*8fa80sdf22193*D
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
-# Public, LAN, Local
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'uci-backpage.herokuapp.com'
+]
 
 
 # Application definition
