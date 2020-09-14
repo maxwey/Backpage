@@ -1,0 +1,52 @@
+.header-content {
+    display:flex;
+    height: inherit;
+}
+
+.header-logo {
+    position: relative;
+    font-family: 'Permanent Marker', cursive;
+    font-size: 40px;
+    transform: rotate(-5deg);
+
+    top: -2px;
+    margin-left: 10px;
+    margin-right: 20px;
+    color: #022631;
+}
+
+a#header-logo-link {
+    text-decoration: none !important;
+    color: inherit;
+}
+
+.header-content-spacer {
+    flex-grow: 1;
+}
+
+#header-login-status {
+    align-self: center;
+    justify-content: right;
+}
+
+#header-logged-in-name {
+    font-weight: bold;
+}
+
+#header-logout-button {
+    padding: var(--default-padding);
+    border: none;
+    outline: none;
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: #4d92a5;
+}
+
+#header-logout-button:hover {
+    background-color: #79b5c5;
+    text-decoration: none !important;
+}
+
+#header-logout-button:active {
+    background-color: #4b7986;
+}

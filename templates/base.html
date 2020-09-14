@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% load static %}
+
+        <meta charset="utf-8">
+        <title>Backpage</title>
+
+        <!-- Fonts -->
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+
+        <!-- Stylesheets -->
+        <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}">
+
+        <!-- External Scripts -->
+        <script src="{% static 'js/moment-2.27/moment.min.js' %}"></script>
+
+        <!-- Script Loading -->
+        <script src="{% static 'js/time.js' %}"></script>
+        <script src="{% static 'js/async.js' %}"></script>
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        <!-- A location for which message can be shown to the user to indicate status -->
+        {% include "messages.html" %}
+        <div class="header">
+            {% include "header.html" %}
+        </div>
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+    </body>
+</html>

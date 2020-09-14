@@ -1,0 +1,193 @@
+.feed-post {
+    background-color: #FFFFFF;
+    margin: 15px;
+    padding: var(--default-padding);
+    box-sizing: border-box;
+    /* define the border around each post block */
+    border-radius: var(--border-radius);
+}
+
+/* The css that controls the appearance of the user name/picture */
+.feed-post-userbadge {
+    display: flex;
+}
+
+.feed-post-userbadge-portrait {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    border-radius: 50%;
+    border-width: 1px;
+    border-style: solid;
+    border-color: lightgray;
+    object-fit: cover;
+}
+
+/* The css that controls the display of the user name/text */
+.feed-post-userbadge-username {
+    font-weight: bold;
+    font-size: var(--font-size-big);
+    color: var(--theme-color);
+    margin: 5px;
+    margin-top: 10px;
+}
+
+.feed-post-userbadge-verified {
+    width: 15px;
+    height: 15px;
+}
+
+/* The css that controls the display of the post date */
+.feed-post-userbadge-date {
+    font-size: var(--font-size-smaller);
+    color: gray;
+    margin: 5px;
+}
+
+/* The css that controls the display of the post content */
+.feed-post-content {
+    margin: 5px;
+    padding: var(--default-padding);
+}
+
+.feed-post-interaction-separator {
+    border-top-style: solid;
+    border-width: 1px;
+    border-color: var(--theme-color-border);
+    margin-top: 10px;
+    margin-left: calc(var(--default-padding) * -1);
+    margin-right: calc(var(--default-padding) * -1);
+}
+
+/* The css that controls the interaction controls (like/comment/share) */
+.feed-post-interaction-controls {
+    display: flex;
+    margin: 5px;
+}
+
+.feed-post-interaction-button {
+    width: 125px;
+    padding: var(--default-padding);
+    border: none;
+    outline: none;
+    margin-left: 2px;
+    margin-right: 2px;
+    background-color: #f7f7f7;
+}
+
+.feed-post-interaction-button:hover {
+    background-color: #eee;
+}
+
+.feed-post-interaction-button:active {
+    background-color: #d5d5d5;
+}
+
+.feed-post-interaction-button-like {
+}
+
+.feed-post-interaction-button-comment {
+}
+
+.feed-post-interaction-button-share {
+}
+
+.feed-post-comments {
+    background-color: #fafafa;
+    padding-left: calc(var(--default-padding) * 2);
+    padding-right: calc(var(--default-padding) * 2);
+    padding-top: calc(var(--default-padding) * 1.25);
+    padding-bottom: calc(var(--default-padding) * 1.25);
+    margin-left: calc(var(--default-padding) * -1);
+    margin-right: calc(var(--default-padding) * -1);
+    margin-bottom: calc(var(--default-padding) * -1);
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+}
+
+/* The css that controls the entire comment display */
+.feed-post-comment {
+
+}
+
+/* The css that controls the entire user "badge" section of the comment */
+.feed-post-comment-userbadge {
+    display: flex;
+    align-items: center;
+}
+
+/* The css that controls the display of the author portrait image */
+.feed-post-comment-userbadge-portrait {
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+    border-radius: 50%;
+    border-width: 1px;
+    border-style: solid;
+    border-color: lightgray;
+    object-fit: cover;
+}
+
+/* The css that controls the display of the comment user name/text */
+.feed-post-comment-userbadge-username {
+    font-weight: bold;
+    font-size: var(--default-font-size);
+    color: var(--theme-color);
+    margin: 4px;
+}
+
+.feed-post-comment-userbadge-verified {
+    width: 12px;
+    height: 12px;
+}
+
+/* The css that controls the display of the comment date */
+.feed-post-comment-userbadge-date {
+    font-size: var(--font-size-small);
+    color: gray;
+    margin: 5px;
+}
+
+/* The css that controls the display of the comment content/text */
+.feed-post-comment-content {
+    margin-bottom: 15px;
+    margin-top: 5px;
+}
+
+/* The css that controls the separator between each comments */
+.feed-post-comment-separator {
+    border-top-style: solid;
+    border-width: 1px;
+    border-color: var(--theme-color-border);
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.feed-post-comment-writing {
+    display: flex;
+    align-items: center;
+}
+
+.feed-post-comment-text-box {
+    outline: none;
+    width: 100%;
+    padding: 7px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: 1px solid transparent;
+}
+
+.feed-post-comment-text-box:focus {
+    border: 1px solid lightblue;
+}
+
+.feed-post-comment-text-box-button {
+    height: 20px;
+    width: 20px;
+    margin-left: 10px;
+    color: var(--theme-color);
+}
+
+.feed-post-comment-placeholder {
+    display: none;
+}

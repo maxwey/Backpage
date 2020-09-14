@@ -1,0 +1,17 @@
+{% load static %}
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{% static 'css/header.css' %}">
+
+
+<div class="header-content">
+    <div class="header-logo">
+        <a id="header-logo-link" href="/">BACKPAGE</a>
+    </div>
+    <div class="header-content-spacer"></div>
+    {% if logged_in_user is not None %}
+    <div id="header-login-status">
+        Welcome, <span id="header-logged-in-name">{{ logged_in_user.name }}</span>!
+        <a id="header-logout-button" href="/logout">Logout</a>
+    </div>
+    {% endif %}
+</div>
