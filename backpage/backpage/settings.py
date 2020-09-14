@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from django.utils.encoding import force_text
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,12 +21,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '=dg%*rt=ronr%w_q^lcginsef3v$@9s20e_icuywwc84b(8!tx'
+with open(os.path.join(os.path.expanduser('~'), 'secure', 'django_secret.txt')) as f:
+    SECRET_KEY = force_text(f.read().strip())
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+# Public, LAN, Local
+ALLOWED_HOSTS = ['136.24.39.100', '192.168.1.150', '127.0.0.1']
 
 
 # Application definition
@@ -121,6 +125,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
+STATIC_ROOT = os.path.join(os.path.expanduser('~'), 'www', 'static-root')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
@@ -130,5 +135,5 @@ STATICFILES_DIRS = [
 # Media files (User images, file uploads)
 # https://docs.djangoproject.com/en/3.0/topics/files/
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'data')
+MEDIA_ROOT = os.path.join(os.path.expanduser('~'), 'www', 'media-root')
 MEDIA_URL = '/data/'
