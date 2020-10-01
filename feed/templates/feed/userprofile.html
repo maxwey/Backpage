@@ -12,7 +12,7 @@
 <div class="user-content">
     <div class="user-content-title">
         {% load static %}
-        <img class="user-content-portrait" src="{{ user.get_portrait_url }}">
+        <img class="user-content-portrait" src="{{ user.get_portrait_url }}" onerror="this.src = '{% static 'img/default_user_profile.png' %}'">
         <div class="user-content-name">
             {{ user.name }}
             {% if user.is_verified %}
@@ -36,7 +36,7 @@
 
     <!-- Post's user information -->
     <div class="feed-post-userbadge">
-        <img class="feed-post-userbadge-portrait" src="{{ post.author.get_portrait_url }}">
+        <img class="feed-post-userbadge-portrait" src="{{ post.author.get_portrait_url }}" onerror="this.src = '{% static 'img/default_user_profile.png' %}'">
 
         <div>
             <div class="feed-post-userbadge-username">
@@ -75,7 +75,7 @@
         {% for comment in comments %}
         <div class="feed-post-comment">
             <div class="feed-post-comment-userbadge">
-                <img class="feed-post-comment-userbadge-portrait" src="{{ comment.author.get_portrait_url }}">
+                <img class="feed-post-comment-userbadge-portrait" src="{{ comment.author.get_portrait_url }}" onerror="this.src = '{% static 'img/default_user_profile.png' %}'">
 
                 <div class="feed-post-comment-userbadge-username">
                     <a href="{% url 'feed:user_profile' comment.author.id %}">{{ comment.author.name }}</a>
@@ -105,7 +105,7 @@
 <!-- Comment Placeholder -->
 <div id="feed-post-comment-template" class="feed-post-comment feed-post-comment-placeholder">
     <div class="feed-post-comment-userbadge">
-        <img class="feed-post-comment-userbadge-portrait" src="{{ logged_in_user.get_portrait_url }}">
+        <img class="feed-post-comment-userbadge-portrait" src="{{ logged_in_user.get_portrait_url }}" onerror="this.src = '{% static 'img/default_user_profile.png' %}'">
 
         <div class="feed-post-comment-userbadge-username">
             <a href="{% url 'feed:user_profile' logged_in_user.id %}">{{ logged_in_user.name }}</a>
