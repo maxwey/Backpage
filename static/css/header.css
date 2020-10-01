@@ -7,12 +7,13 @@
     position: relative;
     font-family: 'Permanent Marker', cursive;
     font-size: 40px;
-    transform: rotate(-5deg);
+    height: 100%;
+}
 
-    top: -2px;
+#header-logo-image {
+    margin-top: 1%;
+    height: 94%;
     margin-left: 10px;
-    margin-right: 20px;
-    color: #022631;
 }
 
 a#header-logo-link {
@@ -28,6 +29,7 @@ a#header-logo-link {
     align-self: center;
     justify-content: right;
 }
+
 
 #header-logged-in-name {
     font-weight: bold;

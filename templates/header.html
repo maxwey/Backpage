@@ -5,7 +5,9 @@
 
 <div class="header-content">
     <div class="header-logo">
-        <a id="header-logo-link" href="/">BACKPAGE</a>
+        <a href="/">
+            <img id="header-logo-image" src="{% static 'img/uc_connect_logo.png' %}">
+        </a>
     </div>
     <div class="header-content-spacer"></div>
     {% if logged_in_user is not None %}
