@@ -72,28 +72,13 @@
     <div class="feed-post-interaction-separator"></div>
     <!-- Comment Section -->
     <div id="feed-post-comment-{{ post.id }}" class="feed-post-comments">
-        {% for comment in comments %}
-        <div class="feed-post-comment">
-            <div class="feed-post-comment-userbadge">
-                <img class="feed-post-comment-userbadge-portrait" src="{{ comment.author.get_portrait_url }}" onerror="this.src = '{% static 'img/default_user_profile.png' %}'">
-
-                <div class="feed-post-comment-userbadge-username">
-                    <a href="{% url 'feed:user_profile' comment.author.id %}">{{ comment.author.name }}</a>
-                    {% if comment.author.is_verified %}
-                    <img class="feed-post-comment-userbadge-verified" src="{% static 'feed/img/verified.png' %}" title="This user has a verified profile">
-                    {% endif %}
-                </div>
-                <div class="feed-post-comment-userbadge-date utc-date-container">
-                    {{ comment.create_date|date:"c" }}
-                </div>
-            </div>
-            <div class="feed-post-comment-content">
-                {{ comment.text }}
-            </div>
-            <div class="feed-post-comment-separator"></div>
-        </div>
+        {% for comment, subcomments in comments %}
+            {% include "feed/comment_template.html" with comment=comment subcomments=subcomments hideline=forloop.first %}
         {% endfor %}
         <!-- Comment writing section -->
+        {% if comments|length > 0 %}
+        <div class="feed-post-comment-separator"></div>
+        {% endif %}
         <div class="feed-post-comment-writing">
             <input id="comment-input-{{ post.id }}" class="feed-post-comment-text-box" type="text" placeholder="Say something!">
             <img id="comment-input-button-{{ post.id }}" class="feed-post-comment-text-box-button" src="{% static 'feed/img/arrow.png' %}" onclick="comment('{{ post.id }}', document.getElementById('comment-input-{{ post.id}}').value)">
