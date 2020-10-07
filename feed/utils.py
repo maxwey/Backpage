@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect, QueryDict
 from django.core.exceptions import ObjectDoesNotExist
-from .models import RealUser
+from .models import RealUser, CommentPost
 from .SafeError import InputError
 import logging
 import json
@@ -75,3 +75,23 @@ def redirect_to_login(request):
     response = HttpResponseRedirect('/login?%s' % qd.urlencode())
     response.delete_cookie('session_id')
     return response
+
+
+# Helper function that gets all the comments for the given parent post
+# The default orders the posts by descending create date, and will only go 5 levels deep.
+def get_comment_post(parent_post, order_by='create_date', recursive_limit=5):
+    if recursive_limit < 0:
+        return []
+
+    data = []
+    comments_qs = CommentPost.objects.filter(parent_post_id=parent_post.id)
+    # result set was empty; skip over
+    if comments_qs:
+        comments = comments_qs.order_by(order_by)
+        # recurse and append to the data array
+        for comment in comments:
+            # get & append all the subcomments to create a flat array
+            comment_pair = (comment, get_comment_post(comment, recursive_limit=(recursive_limit-1)))
+            data.append(comment_pair)
+
+    return data

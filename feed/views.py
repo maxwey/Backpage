@@ -57,19 +57,15 @@ def feed(request):
         return utils.redirect_to_login(request)
 
     # load the data from the db
-    recents_posts = ParentPost.objects.order_by('-create_date')
+    recent_posts = ParentPost.objects.order_by('-create_date')
 
     # load the comments
     # TODO: to minimize page load time, load comments as requested rather than all at once
     data = []
-    for recent_post in recents_posts:
-        comments_qs = CommentPost.objects.filter(parent_post_id=recent_post.id)
-        # result set was empty; skip over
-        if comments_qs:
-            comments = comments_qs.order_by('create_date')
-            data.append((recent_post, comments))
-        else:
-            data.append((recent_post, ()))
+
+    for recent_post in recent_posts:
+        post_comment_pair = (recent_post, utils.get_comment_post(recent_post))
+        data.append(post_comment_pair)
 
     # load the html template used for the feed page
     template = loader.get_template('feed/feed.html')
@@ -92,16 +88,16 @@ def user_profile(request, user_id):
 
     user = get_object_or_404(User, pk=user_id)
 
+    # load the data from the db
     user_posts = ParentPost.objects.filter(author_id=user_id).order_by('-create_date')
+
+    # load the comments
+    # TODO: to minimize page load time, load comments as requested rather than all at once
     data = []
+
     for recent_post in user_posts:
-        comments_qs = CommentPost.objects.filter(parent_post_id=recent_post.id)
-        # result set was empty; skip over
-        if comments_qs:
-            comments = comments_qs.order_by('create_date')
-            data.append((recent_post, comments))
-        else:
-            data.append((recent_post, ()))
+        post_comment_pair = (recent_post, utils.get_comment_post(recent_post))
+        data.append(post_comment_pair)
 
     # load the user profile template
     template = loader.get_template('feed/userprofile.html')

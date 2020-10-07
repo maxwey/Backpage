@@ -110,6 +110,10 @@
 
 }
 
+.feed-post-subcomment-container {
+    margin-left: 25px;
+}
+
 /* The css that controls the entire user "badge" section of the comment */
 .feed-post-comment-userbadge {
     display: flex;
